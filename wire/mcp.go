@@ -214,11 +214,7 @@ func (w *MCPWire) EncodeToolList(ctx context.Context, tools []Tool) ([]byte, err
 	}
 
 	for _, t := range tools {
-		list.Tools = append(list.Tools, mcpTool{
-			Name:        t.Name,
-			Description: t.Description,
-			InputSchema: t.InputSchema,
-		})
+		list.Tools = append(list.Tools, mcpTool(t))
 	}
 
 	return json.Marshal(list)
@@ -233,11 +229,7 @@ func (w *MCPWire) DecodeToolList(ctx context.Context, data []byte) ([]Tool, erro
 
 	tools := make([]Tool, 0, len(list.Tools))
 	for _, t := range list.Tools {
-		tools = append(tools, Tool{
-			Name:        t.Name,
-			Description: t.Description,
-			InputSchema: t.InputSchema,
-		})
+		tools = append(tools, Tool(t))
 	}
 
 	return tools, nil

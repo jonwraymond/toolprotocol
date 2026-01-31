@@ -276,62 +276,90 @@ func TestManager_Cancel_AlreadyTerminal(t *testing.T) {
 func TestManager_StateTransitions_Valid(t *testing.T) {
 	tests := []struct {
 		name         string
-		setup        func(mgr *DefaultManager, ctx context.Context)
+		setup        func(t *testing.T, mgr *DefaultManager, ctx context.Context)
 		action       func(mgr *DefaultManager, ctx context.Context) error
 		wantState    State
 		wantErr      bool
 		wantErrValue error
 	}{
 		{
-			name:      "pending->running via Update",
-			setup:     func(m *DefaultManager, ctx context.Context) { m.Create(ctx, "t") },
+			name: "pending->running via Update",
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+			},
 			action:    func(m *DefaultManager, ctx context.Context) error { return m.Update(ctx, "t", 0.5, "") },
 			wantState: StateRunning,
 		},
 		{
 			name: "running->complete",
-			setup: func(m *DefaultManager, ctx context.Context) {
-				m.Create(ctx, "t")
-				m.Update(ctx, "t", 0.5, "")
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+				if err := m.Update(ctx, "t", 0.5, ""); err != nil {
+					t.Fatalf("Update() error = %v", err)
+				}
 			},
 			action:    func(m *DefaultManager, ctx context.Context) error { return m.Complete(ctx, "t", nil) },
 			wantState: StateComplete,
 		},
 		{
 			name: "running->failed",
-			setup: func(m *DefaultManager, ctx context.Context) {
-				m.Create(ctx, "t")
-				m.Update(ctx, "t", 0.5, "")
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+				if err := m.Update(ctx, "t", 0.5, ""); err != nil {
+					t.Fatalf("Update() error = %v", err)
+				}
 			},
 			action:    func(m *DefaultManager, ctx context.Context) error { return m.Fail(ctx, "t", errors.New("e")) },
 			wantState: StateFailed,
 		},
 		{
 			name: "running->cancelled",
-			setup: func(m *DefaultManager, ctx context.Context) {
-				m.Create(ctx, "t")
-				m.Update(ctx, "t", 0.5, "")
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+				if err := m.Update(ctx, "t", 0.5, ""); err != nil {
+					t.Fatalf("Update() error = %v", err)
+				}
 			},
 			action:    func(m *DefaultManager, ctx context.Context) error { return m.Cancel(ctx, "t") },
 			wantState: StateCancelled,
 		},
 		{
-			name:      "pending->complete (allowed)",
-			setup:     func(m *DefaultManager, ctx context.Context) { m.Create(ctx, "t") },
+			name: "pending->complete (allowed)",
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+			},
 			action:    func(m *DefaultManager, ctx context.Context) error { return m.Complete(ctx, "t", nil) },
 			wantState: StateComplete,
 		},
 		{
-			name:      "pending->cancelled (allowed)",
-			setup:     func(m *DefaultManager, ctx context.Context) { m.Create(ctx, "t") },
+			name: "pending->cancelled (allowed)",
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+			},
 			action:    func(m *DefaultManager, ctx context.Context) error { return m.Cancel(ctx, "t") },
 			wantState: StateCancelled,
 		},
 		{
 			name: "complete->update (invalid)",
-			setup: func(m *DefaultManager, ctx context.Context) {
-				m.Create(ctx, "t")
-				m.Complete(ctx, "t", nil)
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+				if err := m.Complete(ctx, "t", nil); err != nil {
+					t.Fatalf("Complete() error = %v", err)
+				}
 			},
 			action:       func(m *DefaultManager, ctx context.Context) error { return m.Update(ctx, "t", 1.0, "") },
 			wantState:    StateComplete,
@@ -340,9 +368,13 @@ func TestManager_StateTransitions_Valid(t *testing.T) {
 		},
 		{
 			name: "failed->cancel (invalid)",
-			setup: func(m *DefaultManager, ctx context.Context) {
-				m.Create(ctx, "t")
-				m.Fail(ctx, "t", errors.New("e"))
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+				if err := m.Fail(ctx, "t", errors.New("e")); err != nil {
+					t.Fatalf("Fail() error = %v", err)
+				}
 			},
 			action:       func(m *DefaultManager, ctx context.Context) error { return m.Cancel(ctx, "t") },
 			wantState:    StateFailed,
@@ -351,9 +383,13 @@ func TestManager_StateTransitions_Valid(t *testing.T) {
 		},
 		{
 			name: "cancelled->complete (invalid)",
-			setup: func(m *DefaultManager, ctx context.Context) {
-				m.Create(ctx, "t")
-				m.Cancel(ctx, "t")
+			setup: func(t *testing.T, m *DefaultManager, ctx context.Context) {
+				if _, err := m.Create(ctx, "t"); err != nil {
+					t.Fatalf("Create() error = %v", err)
+				}
+				if err := m.Cancel(ctx, "t"); err != nil {
+					t.Fatalf("Cancel() error = %v", err)
+				}
 			},
 			action:       func(m *DefaultManager, ctx context.Context) error { return m.Complete(ctx, "t", nil) },
 			wantState:    StateCancelled,
@@ -367,7 +403,9 @@ func TestManager_StateTransitions_Valid(t *testing.T) {
 			mgr := NewManager()
 			ctx := context.Background()
 
-			tt.setup(mgr, ctx)
+			if tt.setup != nil {
+				tt.setup(t, mgr, ctx)
+			}
 			err := tt.action(mgr, ctx)
 
 			if tt.wantErr {

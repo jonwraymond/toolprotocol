@@ -221,7 +221,9 @@ func TestMemoryStore_Cleanup_RemovesExpired(t *testing.T) {
 
 	// Create multiple sessions
 	for i := 0; i < 5; i++ {
-		store.Create(ctx, "client")
+		if _, err := store.Create(ctx, "client"); err != nil {
+			t.Fatalf("Create() error = %v", err)
+		}
 	}
 
 	time.Sleep(5 * time.Millisecond)
@@ -250,7 +252,7 @@ func TestMemoryStore_ConcurrentSafety(t *testing.T) {
 	// Concurrent creates
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
-		go func(i int) {
+		go func() {
 			defer wg.Done()
 			sess, err := store.Create(ctx, "client")
 			if err != nil {
@@ -258,7 +260,7 @@ func TestMemoryStore_ConcurrentSafety(t *testing.T) {
 				return
 			}
 			sessions <- sess
-		}(i)
+		}()
 	}
 
 	wg.Wait()
@@ -270,12 +272,16 @@ func TestMemoryStore_ConcurrentSafety(t *testing.T) {
 		wg2.Add(2)
 		go func(s *Session) {
 			defer wg2.Done()
-			_, _ = store.Get(ctx, s.ID)
+			if _, err := store.Get(ctx, s.ID); err != nil {
+				t.Errorf("Get() error = %v", err)
+			}
 		}(sess)
 		go func(s *Session) {
 			defer wg2.Done()
 			s.State["test"] = true
-			_ = store.Update(ctx, s)
+			if err := store.Update(ctx, s); err != nil {
+				t.Errorf("Update() error = %v", err)
+			}
 		}(sess)
 	}
 	wg2.Wait()

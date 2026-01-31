@@ -183,7 +183,7 @@ func TestMemoryDiscovery_ContextCancellation(t *testing.T) {
 	err := d.Register(ctx, svc)
 	// Should respect context cancellation
 	if err != nil && err != context.Canceled {
-		// Either nil or context.Canceled is acceptable
+		t.Fatalf("Register() error = %v, want nil or context.Canceled", err)
 	}
 }
 

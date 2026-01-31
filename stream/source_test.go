@@ -19,7 +19,9 @@ func TestSource_NewStream(t *testing.T) {
 		t.Errorf("NewStream() returned %T, want *DefaultStream", s)
 	}
 
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestSource_NewBufferedStream(t *testing.T) {
@@ -36,7 +38,9 @@ func TestSource_NewBufferedStream(t *testing.T) {
 		t.Errorf("NewBufferedStream() returned %T, want *BufferedStream", s)
 	}
 
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestSource_NewBufferedStream_DefaultSize(t *testing.T) {
@@ -47,7 +51,9 @@ func TestSource_NewBufferedStream_DefaultSize(t *testing.T) {
 	if s == nil {
 		t.Fatal("NewBufferedStream() returned nil")
 	}
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestSource_WithBackpressure(t *testing.T) {
@@ -55,7 +61,11 @@ func TestSource_WithBackpressure(t *testing.T) {
 	ctx := context.Background()
 
 	s := source.NewBufferedStream(ctx, 1).(*BufferedStream)
-	defer s.Close()
+	t.Cleanup(func() {
+		if err := s.Close(); err != nil {
+			t.Errorf("Close() error = %v", err)
+		}
+	})
 
 	// Fill buffer
 	_ = s.Send(ctx, Event{Type: EventProgress})

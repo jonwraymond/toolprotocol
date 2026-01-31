@@ -23,7 +23,9 @@ func TestBufferedStream_Send_Buffered(t *testing.T) {
 	for range s.Events() {
 		count++
 		if count == 10 {
-			s.Close()
+			if err := s.Close(); err != nil {
+				t.Fatalf("Close() error = %v", err)
+			}
 		}
 	}
 
@@ -51,7 +53,9 @@ func TestBufferedStream_Send_BackpressureBlock(t *testing.T) {
 		t.Errorf("Send() error = %v, want context.DeadlineExceeded", err)
 	}
 
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestBufferedStream_Send_BackpressureDrop(t *testing.T) {
@@ -70,7 +74,9 @@ func TestBufferedStream_Send_BackpressureDrop(t *testing.T) {
 		t.Errorf("Send() error = %v, want ErrBufferFull", err)
 	}
 
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestBufferedStream_Drain(t *testing.T) {
@@ -93,7 +99,9 @@ func TestBufferedStream_Drain(t *testing.T) {
 		// expected
 	}
 
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestBufferedStream_Close_DrainsBuffer(t *testing.T) {
@@ -106,7 +114,9 @@ func TestBufferedStream_Close_DrainsBuffer(t *testing.T) {
 	}
 
 	// Close
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 
 	// Should still be able to read remaining events
 	count := 0
@@ -122,7 +132,11 @@ func TestBufferedStream_Close_DrainsBuffer(t *testing.T) {
 func TestBufferedStream_DefaultSize(t *testing.T) {
 	// Size less than 1 should use 1
 	s := newBufferedStream(0, BackpressureBlock)
-	defer s.Close()
+	t.Cleanup(func() {
+		if err := s.Close(); err != nil {
+			t.Errorf("Close() error = %v", err)
+		}
+	})
 
 	ctx := context.Background()
 	err := s.Send(ctx, Event{Type: EventProgress})

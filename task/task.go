@@ -143,4 +143,3 @@ type Store interface {
 	// Delete removes a task by ID.
 	Delete(ctx context.Context, id string) error
 }
-

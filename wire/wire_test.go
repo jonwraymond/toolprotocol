@@ -141,10 +141,10 @@ func TestCapabilities_Defaults(t *testing.T) {
 
 func TestCapabilities_AllEnabled(t *testing.T) {
 	caps := Capabilities{
-		Streaming:    true,
+		Streaming:     true,
 		BatchRequests: true,
-		Progress:     true,
-		Cancellation: true,
+		Progress:      true,
+		Cancellation:  true,
 	}
 
 	if !caps.Streaming {

@@ -30,12 +30,16 @@ func TestDefaultStream_Send(t *testing.T) {
 	if received.Type != EventProgress {
 		t.Errorf("received.Type = %v, want %v", received.Type, EventProgress)
 	}
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestDefaultStream_Send_Closed(t *testing.T) {
 	s := newDefaultStream()
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 
 	err := s.Send(context.Background(), Event{Type: EventProgress})
 	if err != ErrStreamClosed {
@@ -45,7 +49,11 @@ func TestDefaultStream_Send_Closed(t *testing.T) {
 
 func TestDefaultStream_Send_ContextCancelled(t *testing.T) {
 	s := newDefaultStream()
-	defer s.Close()
+	t.Cleanup(func() {
+		if err := s.Close(); err != nil {
+			t.Errorf("Close() error = %v", err)
+		}
+	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
@@ -98,7 +106,9 @@ func TestDefaultStream_Done(t *testing.T) {
 
 func TestDefaultStream_Done_ClosedOnClose(t *testing.T) {
 	s := newDefaultStream()
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 
 	select {
 	case <-s.Done():
@@ -134,6 +144,8 @@ func TestDefaultStream_ConcurrentSafety(t *testing.T) {
 
 	// Give time for some sends
 	time.Sleep(10 * time.Millisecond)
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 	wg.Wait()
 }

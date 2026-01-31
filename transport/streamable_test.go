@@ -63,7 +63,9 @@ func TestStreamableTransport_Serve_BindsPort(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -96,7 +98,9 @@ func TestStreamableTransport_Serve_BindsPort(t *testing.T) {
 	if err != nil {
 		t.Errorf("failed to connect to transport: %v", err)
 	} else {
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			t.Errorf("failed to close connection: %v", err)
+		}
 	}
 
 	cancel()
@@ -109,7 +113,9 @@ func TestStreamableTransport_Serve_ContextCancellation(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -136,7 +142,9 @@ func TestStreamableTransport_Serve_StatelessMode(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -169,7 +177,9 @@ func TestStreamableTransport_Serve_JSONMode(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -202,7 +212,9 @@ func TestStreamableTransport_SessionTimeout(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -235,7 +247,9 @@ func TestStreamableTransport_Close_GracefulShutdown(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -296,7 +310,9 @@ func TestStreamableTransport_ConcurrentSafety(t *testing.T) {
 		t.Fatalf("failed to get free port: %v", err)
 	}
 	port := ln.Addr().(*net.TCPAddr).Port
-	ln.Close()
+	if err := ln.Close(); err != nil {
+		t.Fatalf("failed to close listener: %v", err)
+	}
 
 	transport := &StreamableHTTPTransport{
 		Config: StreamableConfig{
@@ -328,7 +344,9 @@ func TestStreamableTransport_ConcurrentSafety(t *testing.T) {
 	}
 	wg.Wait()
 
-	transport.Close()
+	if err := transport.Close(); err != nil {
+		t.Errorf("Close() error = %v", err)
+	}
 }
 
 func TestStreamableTransport_ImplementsInterface(t *testing.T) {

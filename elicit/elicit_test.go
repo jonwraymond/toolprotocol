@@ -273,6 +273,6 @@ func TestResponse_IsSuccess(t *testing.T) {
 
 func TestElicitorInterface_Defined(t *testing.T) {
 	// Compile-time check that interfaces are properly defined
-	var _ Elicitor = (Elicitor)(nil)
-	var _ Handler = (Handler)(nil)
+	var _ = Elicitor(nil)
+	var _ = Handler(nil)
 }

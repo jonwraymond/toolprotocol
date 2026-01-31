@@ -28,9 +28,9 @@ func TestErrInvalidClientID(t *testing.T) {
 
 func TestSessionError_Error(t *testing.T) {
 	tests := []struct {
-		name    string
-		err     *SessionError
-		want    string
+		name string
+		err  *SessionError
+		want string
 	}{
 		{
 			name: "with underlying error",

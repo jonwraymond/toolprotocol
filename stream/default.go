@@ -7,11 +7,10 @@ import (
 
 // DefaultStream is a basic unbuffered stream implementation.
 type DefaultStream struct {
-	mu       sync.RWMutex
-	events   chan Event
-	done     chan struct{}
-	closed   bool
-	closeErr error
+	mu     sync.RWMutex
+	events chan Event
+	done   chan struct{}
+	closed bool
 }
 
 // newDefaultStream creates a new DefaultStream.

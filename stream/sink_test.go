@@ -24,7 +24,9 @@ func TestSink_Consume(t *testing.T) {
 	for _, e := range events {
 		_ = s.Send(ctx, e)
 	}
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 
 	// Consume
 	var received []Event
@@ -52,7 +54,9 @@ func TestSink_Consume_AllEvents(t *testing.T) {
 	for i := 0; i < 50; i++ {
 		_ = s.Send(ctx, Event{Type: EventProgress, Data: i})
 	}
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 
 	count := 0
 	err := sink.Consume(ctx, s, func(event Event) error {
@@ -89,7 +93,9 @@ func TestSink_Consume_HandlerError(t *testing.T) {
 	if err != testErr {
 		t.Errorf("Consume() error = %v, want testErr", err)
 	}
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 }
 
 func TestSink_Consume_ContextCancellation(t *testing.T) {
@@ -98,7 +104,11 @@ func TestSink_Consume_ContextCancellation(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	s := source.NewStream(ctx).(*DefaultStream)
-	defer s.Close()
+	t.Cleanup(func() {
+		if err := s.Close(); err != nil {
+			t.Errorf("Close() error = %v", err)
+		}
+	})
 
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -141,7 +151,9 @@ func TestSink_Consume_StreamClosed(t *testing.T) {
 
 	// Close stream
 	time.Sleep(10 * time.Millisecond)
-	s.Close()
+	if err := s.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
 	wg.Wait()
 
 	if consumeErr != nil {
