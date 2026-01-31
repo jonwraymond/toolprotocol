@@ -105,6 +105,23 @@ func TestError_Format(t *testing.T) {
 	}
 }
 
+func TestError_Format_NoData(t *testing.T) {
+	err := &Error{
+		Code:    -32600,
+		Message: "Invalid request",
+	}
+
+	errStr := err.Error()
+	if errStr == "" {
+		t.Error("Error() returned empty string")
+	}
+	// Should not contain "data:" when Data is nil
+	expected := "Invalid request (code: -32600)"
+	if errStr != expected {
+		t.Errorf("Error() = %q, want %q", errStr, expected)
+	}
+}
+
 func TestCapabilities_Defaults(t *testing.T) {
 	var caps Capabilities
 

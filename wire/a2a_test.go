@@ -310,3 +310,122 @@ func TestA2AWire_RoundTrip(t *testing.T) {
 func TestA2AWire_ImplementsInterface(t *testing.T) {
 	var _ Wire = (*A2AWire)(nil)
 }
+
+func TestA2AWire_DecodeRequest_NumericID(t *testing.T) {
+	w := NewA2A()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": 789,
+		"method": "tasks/send",
+		"params": {}
+	}`
+
+	req, err := w.DecodeRequest(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeRequest error = %v", err)
+	}
+
+	if req.ID != "789" {
+		t.Errorf("ID = %q, want %q", req.ID, "789")
+	}
+}
+
+func TestA2AWire_EncodeResponse_Error(t *testing.T) {
+	w := NewA2A()
+	ctx := context.Background()
+
+	resp := &Response{
+		ID:      "err-1",
+		IsError: true,
+		Error: &Error{
+			Code:    -32600,
+			Message: "Bad request",
+		},
+	}
+
+	data, err := w.EncodeResponse(ctx, resp)
+	if err != nil {
+		t.Fatalf("EncodeResponse error = %v", err)
+	}
+
+	var result map[string]any
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	if result["error"] == nil {
+		t.Error("error field is nil")
+	}
+}
+
+func TestA2AWire_DecodeToolList_WithName(t *testing.T) {
+	w := NewA2A()
+	ctx := context.Background()
+
+	// Test when only name is provided (no id)
+	jsonData := `{
+		"skills": [
+			{
+				"name": "OnlyName",
+				"description": "Test skill"
+			}
+		]
+	}`
+
+	tools, err := w.DecodeToolList(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeToolList error = %v", err)
+	}
+
+	if len(tools) != 1 {
+		t.Fatalf("len(tools) = %d, want 1", len(tools))
+	}
+	if tools[0].Name != "OnlyName" {
+		t.Errorf("tools[0].Name = %q, want %q", tools[0].Name, "OnlyName")
+	}
+}
+
+func TestA2AWire_DecodeResponse_NumericID(t *testing.T) {
+	w := NewA2A()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": 777,
+		"result": {"status": {"state": "completed"}}
+	}`
+
+	resp, err := w.DecodeResponse(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeResponse error = %v", err)
+	}
+
+	if resp.ID != "777" {
+		t.Errorf("ID = %q, want %q", resp.ID, "777")
+	}
+}
+
+func TestA2AWire_DecodeResponse_WithError(t *testing.T) {
+	w := NewA2A()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": "1",
+		"error": {
+			"code": -32600,
+			"message": "Bad request"
+		}
+	}`
+
+	resp, err := w.DecodeResponse(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeResponse error = %v", err)
+	}
+
+	if !resp.IsError {
+		t.Error("IsError = false, want true")
+	}
+}

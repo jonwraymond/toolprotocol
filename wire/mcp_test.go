@@ -374,3 +374,188 @@ func TestMCPWire_RoundTrip(t *testing.T) {
 func TestMCPWire_ImplementsInterface(t *testing.T) {
 	var _ Wire = (*MCPWire)(nil)
 }
+
+func TestMCPWire_EncodeResponse_ImageContent(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	resp := &Response{
+		ID: "img-1",
+		Content: []Content{
+			{Type: ContentTypeImage, Data: []byte{0x89, 0x50}, MIMEType: "image/png"},
+		},
+	}
+
+	data, err := w.EncodeResponse(ctx, resp)
+	if err != nil {
+		t.Fatalf("EncodeResponse error = %v", err)
+	}
+
+	var result map[string]any
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+}
+
+func TestMCPWire_EncodeResponse_ResourceContent(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	resp := &Response{
+		ID: "res-1",
+		Content: []Content{
+			{Type: ContentTypeResource, URI: "file:///test", MIMEType: "text/plain"},
+		},
+	}
+
+	data, err := w.EncodeResponse(ctx, resp)
+	if err != nil {
+		t.Fatalf("EncodeResponse error = %v", err)
+	}
+
+	var result map[string]any
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+}
+
+func TestMCPWire_EncodeResponse_WithMeta(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	resp := &Response{
+		ID: "meta-1",
+		Content: []Content{
+			{Type: ContentTypeText, Text: "result"},
+		},
+		Meta: map[string]any{
+			"duration": 100,
+		},
+	}
+
+	data, err := w.EncodeResponse(ctx, resp)
+	if err != nil {
+		t.Fatalf("EncodeResponse error = %v", err)
+	}
+
+	var result map[string]any
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	res := result["result"].(map[string]any)
+	if res["_meta"] == nil {
+		t.Error("_meta not present in result")
+	}
+}
+
+func TestMCPWire_DecodeResponse_WithMeta(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": "1",
+		"result": {
+			"content": [{"type": "text", "text": "result"}],
+			"_meta": {"duration": 100}
+		}
+	}`
+
+	resp, err := w.DecodeResponse(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeResponse error = %v", err)
+	}
+
+	if resp.Meta == nil {
+		t.Error("Meta is nil")
+	}
+}
+
+func TestMCPWire_DecodeRequest_NumericID(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": 123,
+		"method": "tools/call",
+		"params": {"name": "test"}
+	}`
+
+	req, err := w.DecodeRequest(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeRequest error = %v", err)
+	}
+
+	if req.ID != "123" {
+		t.Errorf("ID = %q, want %q", req.ID, "123")
+	}
+}
+
+func TestMCPWire_DecodeResponse_NumericID(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": 456,
+		"result": {"content": []}
+	}`
+
+	resp, err := w.DecodeResponse(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeResponse error = %v", err)
+	}
+
+	if resp.ID != "456" {
+		t.Errorf("ID = %q, want %q", resp.ID, "456")
+	}
+}
+
+func TestMCPWire_DecodeResponse_ImageContent(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	jsonData := `{
+		"jsonrpc": "2.0",
+		"id": "1",
+		"result": {
+			"content": [
+				{"type": "image", "mimeType": "image/png"},
+				{"type": "resource", "uri": "file:///test", "mimeType": "text/plain"}
+			]
+		}
+	}`
+
+	resp, err := w.DecodeResponse(ctx, []byte(jsonData))
+	if err != nil {
+		t.Fatalf("DecodeResponse error = %v", err)
+	}
+
+	if len(resp.Content) != 2 {
+		t.Errorf("len(Content) = %d, want 2", len(resp.Content))
+	}
+}
+
+func TestMCPWire_EncodeResponse_ResourceNoMime(t *testing.T) {
+	w := NewMCP()
+	ctx := context.Background()
+
+	resp := &Response{
+		ID: "res-2",
+		Content: []Content{
+			{Type: ContentTypeResource, URI: "file:///test"},
+		},
+	}
+
+	data, err := w.EncodeResponse(ctx, resp)
+	if err != nil {
+		t.Fatalf("EncodeResponse error = %v", err)
+	}
+
+	var result map[string]any
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+}
