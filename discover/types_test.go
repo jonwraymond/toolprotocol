@@ -108,6 +108,98 @@ func TestCapabilities_Intersect(t *testing.T) {
 	}
 }
 
+func TestCapabilities_Merge_NilOther(t *testing.T) {
+	a := &Capabilities{
+		Tools:      true,
+		Extensions: []string{"ext.a"},
+	}
+
+	merged := a.Merge(nil)
+	if !merged.Tools {
+		t.Error("merged.Tools = false, want true")
+	}
+	if len(merged.Extensions) != 1 {
+		t.Errorf("len(merged.Extensions) = %d, want 1", len(merged.Extensions))
+	}
+}
+
+func TestCapabilities_Intersect_NilOther(t *testing.T) {
+	a := &Capabilities{
+		Tools: true,
+	}
+
+	intersected := a.Intersect(nil)
+	// Should return empty capabilities when other is nil
+	if intersected.Tools {
+		t.Error("intersected.Tools = true, want false")
+	}
+}
+
+func TestFilter_Matches_NilFilter(t *testing.T) {
+	svc := NewService("test", "http://localhost:8080")
+	var filter *Filter = nil
+
+	if !filter.Matches(svc) {
+		t.Error("nil filter should match all services")
+	}
+}
+
+func TestFilter_Matches_WithCapabilities(t *testing.T) {
+	svc := NewService("test", "http://localhost:8080").
+		WithCapability("tools").
+		WithCapability("streaming")
+
+	filter := &Filter{Capabilities: []string{"tools"}}
+	if !filter.Matches(svc) {
+		t.Error("service with tools should match filter for tools")
+	}
+
+	filter = &Filter{Capabilities: []string{"resources"}}
+	if filter.Matches(svc) {
+		t.Error("service without resources should not match filter for resources")
+	}
+}
+
+func TestFilter_Matches_NilCapabilities(t *testing.T) {
+	svc := &mockDiscoverable{
+		id:   "test",
+		caps: nil,
+	}
+
+	filter := &Filter{Capabilities: []string{"tools"}}
+	if filter.Matches(svc) {
+		t.Error("service with nil capabilities should not match capability filter")
+	}
+}
+
+func TestFilter_Matches_ExtensionCapability(t *testing.T) {
+	svc := NewService("test", "http://localhost:8080").
+		WithCapability("custom.ext")
+
+	filter := &Filter{Capabilities: []string{"custom.ext"}}
+	if !filter.Matches(svc) {
+		t.Error("service with custom extension should match filter for that extension")
+	}
+}
+
+func TestFilter_Matches_AllCapabilityTypes(t *testing.T) {
+	svc := NewService("test", "http://localhost:8080").
+		WithCapability("tools").
+		WithCapability("resources").
+		WithCapability("prompts").
+		WithCapability("streaming").
+		WithCapability("sampling").
+		WithCapability("progress")
+
+	caps := []string{"tools", "resources", "prompts", "streaming", "sampling", "progress"}
+	for _, cap := range caps {
+		filter := &Filter{Capabilities: []string{cap}}
+		if !filter.Matches(svc) {
+			t.Errorf("service should match filter for %q", cap)
+		}
+	}
+}
+
 func TestFilter_Defaults(t *testing.T) {
 	var filter Filter
 
