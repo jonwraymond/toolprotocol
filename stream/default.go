@@ -11,6 +11,7 @@ type DefaultStream struct {
 	events chan Event
 	done   chan struct{}
 	closed bool
+	wg     sync.WaitGroup
 }
 
 // newDefaultStream creates a new DefaultStream.
@@ -28,9 +29,11 @@ func (s *DefaultStream) Send(ctx context.Context, event Event) error {
 		s.mu.RUnlock()
 		return ErrStreamClosed
 	}
+	s.wg.Add(1)
 	events := s.events
 	done := s.done
 	s.mu.RUnlock()
+	defer s.wg.Done()
 
 	select {
 	case <-ctx.Done():
@@ -45,14 +48,16 @@ func (s *DefaultStream) Send(ctx context.Context, event Event) error {
 // Close closes the stream.
 func (s *DefaultStream) Close() error {
 	s.mu.Lock()
-	defer s.mu.Unlock()
-
 	if s.closed {
+		s.mu.Unlock()
 		return nil // idempotent
 	}
 
 	s.closed = true
 	close(s.done)
+	s.mu.Unlock()
+
+	s.wg.Wait()
 	close(s.events)
 	return nil
 }
@@ -65,6 +70,7 @@ func (s *DefaultStream) Done() <-chan struct{} {
 }
 
 // Events returns the events channel for consuming.
+// The channel is closed after Close() returns (once in-flight sends complete).
 func (s *DefaultStream) Events() <-chan Event {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

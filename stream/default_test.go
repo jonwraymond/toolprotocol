@@ -128,8 +128,13 @@ func TestDefaultStream_ConcurrentSafety(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		for range s.Events() {
-			// consume events
+		for {
+			select {
+			case <-s.Done():
+				return
+			case <-s.Events():
+				// consume events
+			}
 		}
 	}()
 
