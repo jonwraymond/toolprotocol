@@ -6,26 +6,26 @@ import (
 )
 
 func TestErrPromptNotFound(t *testing.T) {
-	if ErrPromptNotFound.Error() != "prompt not found" {
-		t.Errorf("Error() = %q", ErrPromptNotFound.Error())
+	if ErrPromptNotFound.Error() != "prompt: not found" {
+		t.Errorf("Error() = %q, want %q", ErrPromptNotFound.Error(), "prompt: not found")
 	}
 }
 
 func TestErrMissingArgument(t *testing.T) {
-	if ErrMissingArgument.Error() != "missing required argument" {
-		t.Errorf("Error() = %q", ErrMissingArgument.Error())
+	if ErrMissingArgument.Error() != "prompt: missing required argument" {
+		t.Errorf("Error() = %q, want %q", ErrMissingArgument.Error(), "prompt: missing required argument")
 	}
 }
 
 func TestErrInvalidPrompt(t *testing.T) {
-	if ErrInvalidPrompt.Error() != "invalid prompt" {
-		t.Errorf("Error() = %q", ErrInvalidPrompt.Error())
+	if ErrInvalidPrompt.Error() != "prompt: invalid" {
+		t.Errorf("Error() = %q, want %q", ErrInvalidPrompt.Error(), "prompt: invalid")
 	}
 }
 
 func TestErrHandlerFailed(t *testing.T) {
-	if ErrHandlerFailed.Error() != "prompt handler failed" {
-		t.Errorf("Error() = %q", ErrHandlerFailed.Error())
+	if ErrHandlerFailed.Error() != "prompt: handler failed" {
+		t.Errorf("Error() = %q, want %q", ErrHandlerFailed.Error(), "prompt: handler failed")
 	}
 }
 
@@ -42,7 +42,7 @@ func TestPromptError_Error(t *testing.T) {
 				Op:         "get",
 				Err:        ErrPromptNotFound,
 			},
-			want: "prompt greeting: get: prompt not found",
+			want: "prompt greeting: get: prompt: not found",
 		},
 		{
 			name: "without underlying error",

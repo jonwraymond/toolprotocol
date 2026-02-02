@@ -6,14 +6,14 @@ import (
 )
 
 func TestErrStreamClosed(t *testing.T) {
-	if ErrStreamClosed.Error() != "stream closed" {
-		t.Errorf("Error() = %q", ErrStreamClosed.Error())
+	if ErrStreamClosed.Error() != "stream: closed" {
+		t.Errorf("Error() = %q, want %q", ErrStreamClosed.Error(), "stream: closed")
 	}
 }
 
 func TestErrBufferFull(t *testing.T) {
-	if ErrBufferFull.Error() != "stream buffer full" {
-		t.Errorf("Error() = %q", ErrBufferFull.Error())
+	if ErrBufferFull.Error() != "stream: buffer full" {
+		t.Errorf("Error() = %q, want %q", ErrBufferFull.Error(), "stream: buffer full")
 	}
 }
 
@@ -30,7 +30,7 @@ func TestStreamError_Error(t *testing.T) {
 				Op:       "send",
 				Err:      ErrStreamClosed,
 			},
-			want: "stream stream-123: send: stream closed",
+			want: "stream stream-123: send: stream: closed",
 		},
 		{
 			name: "without underlying error",

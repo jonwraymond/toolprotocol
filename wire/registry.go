@@ -3,6 +3,12 @@ package wire
 import "sync"
 
 // Registry manages wire format handlers.
+//
+// Contract:
+//   - Concurrency: All methods are safe for concurrent use via sync.RWMutex.
+//   - Registration: Register replaces existing handlers with the same name.
+//   - Lookup: Get returns nil for unknown format names (no error).
+//   - Ownership: Wire implementations are shared; do not modify after registration.
 type Registry struct {
 	mu    sync.RWMutex
 	wires map[string]Wire

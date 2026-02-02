@@ -3,12 +3,13 @@ package stream
 import "errors"
 
 // Sentinel errors for stream operations.
+// All errors use the "stream: " prefix for consistent error identification.
 var (
 	// ErrStreamClosed is returned when sending to a closed stream.
-	ErrStreamClosed = errors.New("stream closed")
+	ErrStreamClosed = errors.New("stream: closed")
 
 	// ErrBufferFull is returned when the buffer is full and backpressure is drop.
-	ErrBufferFull = errors.New("stream buffer full")
+	ErrBufferFull = errors.New("stream: buffer full")
 )
 
 // StreamError wraps an error with stream context.

@@ -9,9 +9,9 @@ func TestErrTransportClosed(t *testing.T) {
 	if ErrTransportClosed == nil {
 		t.Fatal("ErrTransportClosed is nil")
 	}
-	if ErrTransportClosed.Error() != "transport closed" {
+	if ErrTransportClosed.Error() != "transport: closed" {
 		t.Errorf("ErrTransportClosed.Error() = %q, want %q",
-			ErrTransportClosed.Error(), "transport closed")
+			ErrTransportClosed.Error(), "transport: closed")
 	}
 }
 
@@ -19,9 +19,9 @@ func TestErrAlreadyServing(t *testing.T) {
 	if ErrAlreadyServing == nil {
 		t.Fatal("ErrAlreadyServing is nil")
 	}
-	if ErrAlreadyServing.Error() != "transport already serving" {
+	if ErrAlreadyServing.Error() != "transport: already serving" {
 		t.Errorf("ErrAlreadyServing.Error() = %q, want %q",
-			ErrAlreadyServing.Error(), "transport already serving")
+			ErrAlreadyServing.Error(), "transport: already serving")
 	}
 }
 
@@ -29,9 +29,9 @@ func TestErrInvalidConfig(t *testing.T) {
 	if ErrInvalidConfig == nil {
 		t.Fatal("ErrInvalidConfig is nil")
 	}
-	if ErrInvalidConfig.Error() != "invalid transport configuration" {
+	if ErrInvalidConfig.Error() != "transport: invalid configuration" {
 		t.Errorf("ErrInvalidConfig.Error() = %q, want %q",
-			ErrInvalidConfig.Error(), "invalid transport configuration")
+			ErrInvalidConfig.Error(), "transport: invalid configuration")
 	}
 }
 

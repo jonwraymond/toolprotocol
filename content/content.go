@@ -21,6 +21,12 @@ const (
 )
 
 // Content is the interface for all content types.
+//
+// Contract:
+//   - Concurrency: Implementations are safe for concurrent reads.
+//   - Immutability: Content should not be modified after creation.
+//   - Errors: Bytes returns nil error for in-memory content types.
+//   - Encoding: String returns base64 for binary types (image, audio).
 type Content interface {
 	// Type returns the content type.
 	Type() Type

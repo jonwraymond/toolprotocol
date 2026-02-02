@@ -6,26 +6,26 @@ import (
 )
 
 func TestErrResourceNotFound(t *testing.T) {
-	if ErrResourceNotFound.Error() != "resource not found" {
-		t.Errorf("Error() = %q", ErrResourceNotFound.Error())
+	if ErrResourceNotFound.Error() != "resource: not found" {
+		t.Errorf("Error() = %q, want %q", ErrResourceNotFound.Error(), "resource: not found")
 	}
 }
 
 func TestErrProviderNotFound(t *testing.T) {
-	if ErrProviderNotFound.Error() != "provider not found for scheme" {
-		t.Errorf("Error() = %q", ErrProviderNotFound.Error())
+	if ErrProviderNotFound.Error() != "resource: provider not found" {
+		t.Errorf("Error() = %q, want %q", ErrProviderNotFound.Error(), "resource: provider not found")
 	}
 }
 
 func TestErrInvalidURI(t *testing.T) {
-	if ErrInvalidURI.Error() != "invalid URI" {
-		t.Errorf("Error() = %q", ErrInvalidURI.Error())
+	if ErrInvalidURI.Error() != "resource: invalid URI" {
+		t.Errorf("Error() = %q, want %q", ErrInvalidURI.Error(), "resource: invalid URI")
 	}
 }
 
 func TestErrDuplicateProvider(t *testing.T) {
-	if ErrDuplicateProvider.Error() != "provider already registered" {
-		t.Errorf("Error() = %q", ErrDuplicateProvider.Error())
+	if ErrDuplicateProvider.Error() != "resource: provider already registered" {
+		t.Errorf("Error() = %q, want %q", ErrDuplicateProvider.Error(), "resource: provider already registered")
 	}
 }
 
@@ -42,7 +42,7 @@ func TestResourceError_Error(t *testing.T) {
 				Op:  "read",
 				Err: ErrResourceNotFound,
 			},
-			want: "resource file:///test: read: resource not found",
+			want: "resource file:///test: read: resource: not found",
 		},
 		{
 			name: "without underlying error",

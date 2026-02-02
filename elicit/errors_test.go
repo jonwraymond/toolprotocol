@@ -6,26 +6,26 @@ import (
 )
 
 func TestErrInvalidRequest(t *testing.T) {
-	if ErrInvalidRequest.Error() != "invalid elicitation request" {
-		t.Errorf("Error() = %q", ErrInvalidRequest.Error())
+	if ErrInvalidRequest.Error() != "elicit: invalid request" {
+		t.Errorf("Error() = %q, want %q", ErrInvalidRequest.Error(), "elicit: invalid request")
 	}
 }
 
 func TestErrTimeout(t *testing.T) {
-	if ErrTimeout.Error() != "elicitation request timed out" {
-		t.Errorf("Error() = %q", ErrTimeout.Error())
+	if ErrTimeout.Error() != "elicit: timeout" {
+		t.Errorf("Error() = %q, want %q", ErrTimeout.Error(), "elicit: timeout")
 	}
 }
 
 func TestErrCancelled(t *testing.T) {
-	if ErrCancelled.Error() != "elicitation request cancelled" {
-		t.Errorf("Error() = %q", ErrCancelled.Error())
+	if ErrCancelled.Error() != "elicit: cancelled" {
+		t.Errorf("Error() = %q, want %q", ErrCancelled.Error(), "elicit: cancelled")
 	}
 }
 
 func TestErrNoHandler(t *testing.T) {
-	if ErrNoHandler.Error() != "no elicitation handler" {
-		t.Errorf("Error() = %q", ErrNoHandler.Error())
+	if ErrNoHandler.Error() != "elicit: no handler" {
+		t.Errorf("Error() = %q, want %q", ErrNoHandler.Error(), "elicit: no handler")
 	}
 }
 
@@ -42,7 +42,7 @@ func TestElicitError_Error(t *testing.T) {
 				Op:        "validate",
 				Err:       ErrInvalidRequest,
 			},
-			want: "elicit req-123: validate: invalid elicitation request",
+			want: "elicit req-123: validate: elicit: invalid request",
 		},
 		{
 			name: "without underlying error",

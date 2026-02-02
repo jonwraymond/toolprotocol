@@ -69,6 +69,14 @@ func (s *Session) GetState(key string) (any, bool) {
 }
 
 // Store manages session persistence.
+//
+// Contract:
+//   - Concurrency: Implementations must be safe for concurrent use.
+//   - Context: All methods should honor context cancellation.
+//   - Errors: Returns ErrSessionNotFound, ErrSessionExpired, ErrInvalidClientID
+//     as appropriate. Use errors.Is for checking.
+//   - Ownership: Returned *Session is a copy; modifications require Update().
+//   - Cleanup: Callers should periodically call Cleanup to remove expired sessions.
 type Store interface {
 	// Create creates a new session for the given client ID.
 	Create(ctx context.Context, clientID string) (*Session, error)

@@ -101,6 +101,15 @@ func (t *Task) Clone() *Task {
 }
 
 // Manager manages task lifecycle.
+//
+// Contract:
+//   - Concurrency: All methods are safe for concurrent use via sync.RWMutex.
+//   - Context: All methods accept context but do not currently block on I/O.
+//   - State Machine: pending→running→complete|failed|cancelled
+//   - Errors: Returns ErrTaskNotFound, ErrTaskExists, ErrInvalidTransition, ErrEmptyID.
+//     Use errors.Is for checking.
+//   - Ownership: Returned *Task is a copy; internal state is protected.
+//   - Subscriptions: Channels closed on terminal state or context cancellation.
 type Manager interface {
 	// Create creates a new task with the given ID.
 	Create(ctx context.Context, id string) (*Task, error)
@@ -130,6 +139,11 @@ type Manager interface {
 }
 
 // Store provides task persistence.
+//
+// Contract:
+//   - Concurrency: Implementations must be safe for concurrent use.
+//   - Ownership: Save stores a clone; Load returns a clone.
+//   - Errors: Returns ErrTaskNotFound for missing tasks.
 type Store interface {
 	// Save saves or updates a task.
 	Save(ctx context.Context, task *Task) error

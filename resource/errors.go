@@ -3,21 +3,22 @@ package resource
 import "errors"
 
 // Sentinel errors for resource operations.
+// All errors use the "resource: " prefix for consistent error identification.
 var (
 	// ErrResourceNotFound is returned when a resource cannot be found.
-	ErrResourceNotFound = errors.New("resource not found")
+	ErrResourceNotFound = errors.New("resource: not found")
 
 	// ErrProviderNotFound is returned when no provider handles a URI scheme.
-	ErrProviderNotFound = errors.New("provider not found for scheme")
+	ErrProviderNotFound = errors.New("resource: provider not found")
 
 	// ErrInvalidURI is returned when a URI is invalid.
-	ErrInvalidURI = errors.New("invalid URI")
+	ErrInvalidURI = errors.New("resource: invalid URI")
 
 	// ErrDuplicateProvider is returned when registering a duplicate provider.
-	ErrDuplicateProvider = errors.New("provider already registered")
+	ErrDuplicateProvider = errors.New("resource: provider already registered")
 
 	// ErrNotSubscribed is returned when unsubscribing from a non-subscribed resource.
-	ErrNotSubscribed = errors.New("not subscribed to resource")
+	ErrNotSubscribed = errors.New("resource: not subscribed")
 )
 
 // ResourceError wraps an error with resource context.

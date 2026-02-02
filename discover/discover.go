@@ -3,6 +3,11 @@ package discover
 import "context"
 
 // Discoverable represents a service that can be discovered.
+//
+// Contract:
+//   - Concurrency: Implementations should be safe for concurrent reads.
+//   - Immutability: Service metadata should not change after registration.
+//   - Identity: ID must be unique within a Discovery registry.
 type Discoverable interface {
 	// ID returns the unique service identifier.
 	ID() string
@@ -24,6 +29,12 @@ type Discoverable interface {
 }
 
 // Discovery manages service registration and lookup.
+//
+// Contract:
+//   - Concurrency: All methods must be safe for concurrent use.
+//   - Context: All methods honor context cancellation.
+//   - Errors: Returns ErrNotFound, ErrDuplicate as appropriate; use errors.Is.
+//   - Ordering: List returns services in consistent order (sorted by ID).
 type Discovery interface {
 	// Register adds a service to the discovery registry.
 	Register(ctx context.Context, svc Discoverable) error

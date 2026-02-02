@@ -3,21 +3,22 @@ package prompt
 import "errors"
 
 // Sentinel errors for prompt operations.
+// All errors use the "prompt: " prefix for consistent error identification.
 var (
 	// ErrPromptNotFound is returned when a prompt cannot be found.
-	ErrPromptNotFound = errors.New("prompt not found")
+	ErrPromptNotFound = errors.New("prompt: not found")
 
 	// ErrMissingArgument is returned when a required argument is missing.
-	ErrMissingArgument = errors.New("missing required argument")
+	ErrMissingArgument = errors.New("prompt: missing required argument")
 
 	// ErrInvalidPrompt is returned when a prompt is invalid.
-	ErrInvalidPrompt = errors.New("invalid prompt")
+	ErrInvalidPrompt = errors.New("prompt: invalid")
 
 	// ErrHandlerFailed is returned when a prompt handler fails.
-	ErrHandlerFailed = errors.New("prompt handler failed")
+	ErrHandlerFailed = errors.New("prompt: handler failed")
 
 	// ErrDuplicatePrompt is returned when registering a duplicate prompt.
-	ErrDuplicatePrompt = errors.New("prompt already registered")
+	ErrDuplicatePrompt = errors.New("prompt: already registered")
 )
 
 // PromptError wraps an error with prompt context.

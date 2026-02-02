@@ -206,9 +206,9 @@ func TestErrUnsupportedFormat(t *testing.T) {
 	if ErrUnsupportedFormat == nil {
 		t.Fatal("ErrUnsupportedFormat is nil")
 	}
-	if ErrUnsupportedFormat.Error() != "unsupported wire format" {
+	if ErrUnsupportedFormat.Error() != "wire: unsupported format" {
 		t.Errorf("ErrUnsupportedFormat.Error() = %q, want %q",
-			ErrUnsupportedFormat.Error(), "unsupported wire format")
+			ErrUnsupportedFormat.Error(), "wire: unsupported format")
 	}
 }
 

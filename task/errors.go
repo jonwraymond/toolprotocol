@@ -3,21 +3,22 @@ package task
 import "errors"
 
 // Sentinel errors for task operations.
+// All errors use the "task: " prefix for consistent error identification.
 var (
 	// ErrTaskNotFound is returned when a task cannot be found.
-	ErrTaskNotFound = errors.New("task not found")
+	ErrTaskNotFound = errors.New("task: not found")
 
 	// ErrTaskExists is returned when creating a task that already exists.
-	ErrTaskExists = errors.New("task already exists")
+	ErrTaskExists = errors.New("task: already exists")
 
 	// ErrInvalidState is returned for invalid task states.
-	ErrInvalidState = errors.New("invalid task state")
+	ErrInvalidState = errors.New("task: invalid state")
 
 	// ErrInvalidTransition is returned for invalid state transitions.
-	ErrInvalidTransition = errors.New("invalid state transition")
+	ErrInvalidTransition = errors.New("task: invalid transition")
 
 	// ErrEmptyID is returned when a task ID is empty.
-	ErrEmptyID = errors.New("task ID cannot be empty")
+	ErrEmptyID = errors.New("task: empty ID")
 )
 
 // TaskError wraps an error with task context.

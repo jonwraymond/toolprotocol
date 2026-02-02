@@ -9,6 +9,9 @@ import (
 )
 
 // MemoryStore is an in-memory implementation of Store.
+//
+// Thread Safety: All operations are protected by sync.RWMutex.
+// Get uses RLock for concurrent reads; Create/Update/Delete/Cleanup use Lock.
 type MemoryStore struct {
 	mu       sync.RWMutex
 	sessions map[string]*Session

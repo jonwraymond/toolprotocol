@@ -3,6 +3,16 @@ package wire
 import "context"
 
 // Wire encodes/decodes protocol-specific wire formats.
+//
+// Contract:
+//   - Concurrency: All implementations are safe for concurrent use.
+//     MCPWire, A2AWire, and ACPWire are stateless and thread-safe.
+//   - Context: Encode/Decode methods accept context for future extensibility.
+//     Current implementations do not perform I/O and ignore context.
+//   - Errors: Returns wrapped errors with context (e.g., "decode request: ...").
+//     Use errors.Is/errors.As for error inspection.
+//   - Ownership: Input data is not modified. Output []byte is owned by caller.
+//   - Nil safety: Passing nil *Request or *Response to Encode methods will panic.
 type Wire interface {
 	// Name returns the protocol name (e.g., "mcp", "a2a", "acp").
 	Name() string

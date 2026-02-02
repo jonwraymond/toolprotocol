@@ -3,18 +3,19 @@ package elicit
 import "errors"
 
 // Sentinel errors for elicitation operations.
+// All errors use the "elicit: " prefix for consistent error identification.
 var (
 	// ErrInvalidRequest is returned when a request is invalid.
-	ErrInvalidRequest = errors.New("invalid elicitation request")
+	ErrInvalidRequest = errors.New("elicit: invalid request")
 
 	// ErrTimeout is returned when a request times out.
-	ErrTimeout = errors.New("elicitation request timed out")
+	ErrTimeout = errors.New("elicit: timeout")
 
 	// ErrCancelled is returned when a request is cancelled.
-	ErrCancelled = errors.New("elicitation request cancelled")
+	ErrCancelled = errors.New("elicit: cancelled")
 
 	// ErrNoHandler is returned when no handler is available.
-	ErrNoHandler = errors.New("no elicitation handler")
+	ErrNoHandler = errors.New("elicit: no handler")
 )
 
 // ElicitError wraps an error with elicitation context.

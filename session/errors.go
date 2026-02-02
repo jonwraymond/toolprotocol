@@ -3,15 +3,16 @@ package session
 import "errors"
 
 // Sentinel errors for session operations.
+// All errors use the "session: " prefix for consistent error identification.
 var (
 	// ErrSessionNotFound is returned when a session cannot be found.
-	ErrSessionNotFound = errors.New("session not found")
+	ErrSessionNotFound = errors.New("session: not found")
 
 	// ErrSessionExpired is returned when a session has expired.
-	ErrSessionExpired = errors.New("session expired")
+	ErrSessionExpired = errors.New("session: expired")
 
 	// ErrInvalidClientID is returned when a client ID is empty or invalid.
-	ErrInvalidClientID = errors.New("invalid client ID")
+	ErrInvalidClientID = errors.New("session: invalid client ID")
 )
 
 // SessionError wraps an error with session context.

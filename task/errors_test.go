@@ -6,32 +6,32 @@ import (
 )
 
 func TestErrTaskNotFound(t *testing.T) {
-	if ErrTaskNotFound.Error() != "task not found" {
-		t.Errorf("ErrTaskNotFound.Error() = %v, want 'task not found'", ErrTaskNotFound.Error())
+	if ErrTaskNotFound.Error() != "task: not found" {
+		t.Errorf("ErrTaskNotFound.Error() = %v, want 'task: not found'", ErrTaskNotFound.Error())
 	}
 }
 
 func TestErrTaskExists(t *testing.T) {
-	if ErrTaskExists.Error() != "task already exists" {
-		t.Errorf("ErrTaskExists.Error() = %v, want 'task already exists'", ErrTaskExists.Error())
+	if ErrTaskExists.Error() != "task: already exists" {
+		t.Errorf("ErrTaskExists.Error() = %v, want 'task: already exists'", ErrTaskExists.Error())
 	}
 }
 
 func TestErrInvalidState(t *testing.T) {
-	if ErrInvalidState.Error() != "invalid task state" {
-		t.Errorf("ErrInvalidState.Error() = %v, want 'invalid task state'", ErrInvalidState.Error())
+	if ErrInvalidState.Error() != "task: invalid state" {
+		t.Errorf("ErrInvalidState.Error() = %v, want 'task: invalid state'", ErrInvalidState.Error())
 	}
 }
 
 func TestErrInvalidTransition(t *testing.T) {
-	if ErrInvalidTransition.Error() != "invalid state transition" {
-		t.Errorf("ErrInvalidTransition.Error() = %v, want 'invalid state transition'", ErrInvalidTransition.Error())
+	if ErrInvalidTransition.Error() != "task: invalid transition" {
+		t.Errorf("ErrInvalidTransition.Error() = %v, want 'task: invalid transition'", ErrInvalidTransition.Error())
 	}
 }
 
 func TestErrEmptyID(t *testing.T) {
-	if ErrEmptyID.Error() != "task ID cannot be empty" {
-		t.Errorf("ErrEmptyID.Error() = %v, want 'task ID cannot be empty'", ErrEmptyID.Error())
+	if ErrEmptyID.Error() != "task: empty ID" {
+		t.Errorf("ErrEmptyID.Error() = %v, want 'task: empty ID'", ErrEmptyID.Error())
 	}
 }
 
@@ -43,7 +43,7 @@ func TestTaskError_Error(t *testing.T) {
 	}
 
 	got := err.Error()
-	want := "task task-1: update: task not found"
+	want := "task task-1: update: task: not found"
 	if got != want {
 		t.Errorf("TaskError.Error() = %v, want %v", got, want)
 	}

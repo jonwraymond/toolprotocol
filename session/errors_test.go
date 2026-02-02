@@ -7,22 +7,22 @@ import (
 
 func TestErrSessionNotFound(t *testing.T) {
 	err := ErrSessionNotFound
-	if err.Error() != "session not found" {
-		t.Errorf("Error() = %q, want %q", err.Error(), "session not found")
+	if err.Error() != "session: not found" {
+		t.Errorf("Error() = %q, want %q", err.Error(), "session: not found")
 	}
 }
 
 func TestErrSessionExpired(t *testing.T) {
 	err := ErrSessionExpired
-	if err.Error() != "session expired" {
-		t.Errorf("Error() = %q, want %q", err.Error(), "session expired")
+	if err.Error() != "session: expired" {
+		t.Errorf("Error() = %q, want %q", err.Error(), "session: expired")
 	}
 }
 
 func TestErrInvalidClientID(t *testing.T) {
 	err := ErrInvalidClientID
-	if err.Error() != "invalid client ID" {
-		t.Errorf("Error() = %q, want %q", err.Error(), "invalid client ID")
+	if err.Error() != "session: invalid client ID" {
+		t.Errorf("Error() = %q, want %q", err.Error(), "session: invalid client ID")
 	}
 }
 
@@ -39,7 +39,7 @@ func TestSessionError_Error(t *testing.T) {
 				Op:        "get",
 				Err:       ErrSessionNotFound,
 			},
-			want: "session sess-123: get: session not found",
+			want: "session sess-123: get: session: not found",
 		},
 		{
 			name: "without underlying error",
