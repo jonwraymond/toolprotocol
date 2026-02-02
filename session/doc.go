@@ -97,8 +97,8 @@
 // All exported types are safe for concurrent use:
 //
 //   - [MemoryStore]: sync.RWMutex protects all operations
-//     - Get: Uses RLock for concurrent reads
-//     - Create/Update/Delete/Cleanup: Uses Lock for exclusive access
+//   - Get: Uses RLock for concurrent reads
+//   - Create/Update/Delete/Cleanup: Uses Lock for exclusive access
 //   - [Session]: Not thread-safe; use Store.Update() for safe mutations
 //   - Context functions: Thread-safe (context.Context is immutable)
 //

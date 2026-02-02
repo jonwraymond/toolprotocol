@@ -37,23 +37,23 @@
 //
 // Tasks follow a state machine with the following states and transitions:
 //
-//	                    ┌─────────────────────────────────────┐
-//	                    │          State Machine              │
-//	                    └─────────────────────────────────────┘
+//	                ┌─────────────────────────────────────┐
+//	                │          State Machine              │
+//	                └─────────────────────────────────────┘
 //
-//	     ┌─────────┐      Update       ┌─────────┐
-//	     │ pending │─────────────────▶│ running │
-//	     └────┬────┘                   └────┬────┘
-//	          │                              │
-//	          │ Cancel                       │ Complete/Fail/Cancel
-//	          │                              │
-//	          ▼                              ▼
-//	    ┌───────────┐                  ┌───────────┐
-//	    │ cancelled │                  │ complete  │
-//	    └───────────┘                  │  failed   │
-//	                                   │ cancelled │
-//	                                   └───────────┘
-//	                                    (terminal)
+//	 ┌─────────┐      Update       ┌─────────┐
+//	 │ pending │─────────────────▶│ running │
+//	 └────┬────┘                   └────┬────┘
+//	      │                              │
+//	      │ Cancel                       │ Complete/Fail/Cancel
+//	      │                              │
+//	      ▼                              ▼
+//	┌───────────┐                  ┌───────────┐
+//	│ cancelled │                  │ complete  │
+//	└───────────┘                  │  failed   │
+//	                               │ cancelled │
+//	                               └───────────┘
+//	                                (terminal)
 //
 // Terminal states (complete, failed, cancelled) allow no further transitions.
 //
@@ -116,8 +116,8 @@
 // All exported types are safe for concurrent use:
 //
 //   - [DefaultManager]: sync.RWMutex protects all operations
-//     - Get/List: Uses RLock for concurrent reads
-//     - Create/Update/Complete/Fail/Cancel: Uses Lock for exclusive access
+//   - Get/List: Uses RLock for concurrent reads
+//   - Create/Update/Complete/Fail/Cancel: Uses Lock for exclusive access
 //   - [MemoryStore]: sync.RWMutex protects all operations
 //   - [Task]: Not thread-safe; use Manager methods for safe mutations
 //   - Subscription channels: Buffered (10) for non-blocking sends

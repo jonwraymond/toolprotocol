@@ -22,7 +22,7 @@ func BenchmarkDefaultStream_Send(b *testing.B) {
 		_ = s.Send(ctx, event)
 	}
 	b.StopTimer()
-	s.Close()
+	_ = s.Close()
 }
 
 // BenchmarkBufferedStream_Send measures buffered stream send performance.
@@ -42,7 +42,7 @@ func BenchmarkBufferedStream_Send(b *testing.B) {
 		_ = s.Send(ctx, event)
 	}
 	b.StopTimer()
-	s.Close()
+	_ = s.Close()
 }
 
 // BenchmarkBufferedStream_Send_Drop measures drop-mode send performance.
@@ -62,7 +62,7 @@ func BenchmarkBufferedStream_Send_Drop(b *testing.B) {
 		_ = s.Send(ctx, event)
 	}
 	b.StopTimer()
-	s.Close()
+	_ = s.Close()
 }
 
 // BenchmarkDefaultStream_Close measures stream close performance.
@@ -103,7 +103,7 @@ func BenchmarkDefaultSink_Consume(b *testing.B) {
 		for range 50 {
 			_ = s.Send(ctx, Event{Type: EventProgress})
 		}
-		s.Close()
+		_ = s.Close()
 		b.StartTimer()
 
 		_ = sink.Consume(ctx, s, handler)
@@ -196,7 +196,7 @@ func BenchmarkStream_Throughput(b *testing.B) {
 		for range 100 {
 			_ = s.Send(ctx, Event{Type: EventProgress, Data: 0.5})
 		}
-		s.Close()
+		_ = s.Close()
 		<-done
 	}
 }
@@ -220,5 +220,5 @@ func BenchmarkStream_Concurrent(b *testing.B) {
 		}
 	})
 	b.StopTimer()
-	s.Close()
+	_ = s.Close()
 }

@@ -159,8 +159,8 @@ func ExampleStreamableHTTPTransport_Info_defaults() {
 
 	info := t.Info()
 	fmt.Println("Name:", info.Name)
-	fmt.Println("Addr:", info.Addr)        // Uses 0.0.0.0 default
-	fmt.Println("Path:", info.Path)        // Uses /mcp default
+	fmt.Println("Addr:", info.Addr) // Uses 0.0.0.0 default
+	fmt.Println("Path:", info.Path) // Uses /mcp default
 	// Output:
 	// Name: streamable
 	// Addr: 0.0.0.0:3000

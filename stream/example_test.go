@@ -30,7 +30,7 @@ func ExampleDefaultSource_NewStream() {
 	ctx := context.Background()
 
 	s := source.NewStream(ctx)
-	defer s.Close()
+	defer func() { _ = s.Close() }()
 
 	fmt.Printf("Stream type: %T\n", s)
 	// Output:
@@ -42,7 +42,7 @@ func ExampleDefaultSource_NewBufferedStream() {
 	ctx := context.Background()
 
 	s := source.NewBufferedStream(ctx, 100)
-	defer s.Close()
+	defer func() { _ = s.Close() }()
 
 	fmt.Printf("Stream type: %T\n", s)
 	// Output:
@@ -70,7 +70,7 @@ func ExampleDefaultStream_Send() {
 	})
 	fmt.Println("Send error:", err)
 
-	s.Close()
+	_ = s.Close()
 	<-done
 	// Output:
 	// Send error: <nil>
@@ -82,7 +82,7 @@ func ExampleDefaultStream_Send_closed() {
 	s := source.NewStream(ctx)
 
 	// Close the stream first
-	s.Close()
+	_ = s.Close()
 
 	// Try to send to closed stream
 	err := s.Send(ctx, stream.Event{Type: stream.EventProgress})
@@ -120,7 +120,7 @@ func ExampleDefaultStream_Done() {
 		fmt.Println("Done before close: open")
 	}
 
-	s.Close()
+	_ = s.Close()
 
 	// Done channel is closed after close
 	select {
@@ -146,7 +146,7 @@ func ExampleBufferedStream_Send() {
 	})
 	fmt.Println("Send error:", err)
 
-	s.Close()
+	_ = s.Close()
 	// Output:
 	// Send error: <nil>
 }
@@ -163,7 +163,7 @@ func ExampleBufferedStream_Send_backpressureDrop() {
 	err := s.Send(ctx, stream.Event{Type: stream.EventProgress})
 	fmt.Println("Is ErrBufferFull:", errors.Is(err, stream.ErrBufferFull))
 
-	s.Close()
+	_ = s.Close()
 	// Output:
 	// Is ErrBufferFull: true
 }
@@ -186,7 +186,7 @@ func ExampleDefaultSink_Consume() {
 	// Send some events
 	_ = s.Send(ctx, stream.Event{Type: stream.EventProgress, Data: 0.5})
 	_ = s.Send(ctx, stream.Event{Type: stream.EventComplete, Data: "done"})
-	s.Close()
+	_ = s.Close()
 
 	// Consume events
 	var count int
@@ -212,7 +212,7 @@ func ExampleDefaultSink_Consume_handlerError() {
 	// Send events
 	_ = s.Send(ctx, stream.Event{Type: stream.EventProgress})
 	_ = s.Send(ctx, stream.Event{Type: stream.EventProgress})
-	s.Close()
+	_ = s.Close()
 
 	// Handler returns error on first event
 	handlerErr := errors.New("handler failed")
@@ -346,7 +346,7 @@ func Example_streamingWorkflow() {
 		// Complete
 		_ = s.Send(ctx, stream.Event{Type: stream.EventComplete, Data: "final result"})
 
-		s.Close()
+		_ = s.Close()
 	}()
 
 	// Consume all events

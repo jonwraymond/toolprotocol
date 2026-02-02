@@ -298,7 +298,7 @@ func Example_promptWorkflow() {
 		}
 		return []prompt.Message{
 			prompt.NewUserMessage(
-				prompt.TextContent("Please review this code with a " + style + " approach:"),
+				prompt.TextContent("Please review this code with a "+style+" approach:"),
 				prompt.TextContent(args["code"]),
 			),
 		}, nil
