@@ -78,3 +78,8 @@ _ = s.Send(ctx, stream.Event{Type: stream.EventProgress, Data: 0.3})
 _ = s.Send(ctx, stream.Event{Type: stream.EventComplete, Data: map[string]any{"ok": true}})
 _ = s.Close()
 ```
+
+## Next Steps
+
+- Review the [Examples](examples.md) page for runnable snippets.
+- Use `toolprotocol/wire` + `toolprotocol/transport` inside `metatools-mcp`.

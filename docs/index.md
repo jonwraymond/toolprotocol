@@ -24,6 +24,13 @@ A2A, and ACP integrations. The packages here are transport-agnostic and composab
 go get github.com/jonwraymond/toolprotocol@latest
 ```
 
+## Documentation Map
+
+- [Architecture](architecture.md)
+- [Schemas and Contracts](schemas.md)
+- [Examples](examples.md)
+- [Design Notes](design-notes.md)
+
 ## Quick Start: Wire + Transport
 
 ```go
