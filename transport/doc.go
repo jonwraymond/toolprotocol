@@ -40,7 +40,7 @@
 //   - [Transport]: Interface for protocol communication mechanisms
 //   - [Server]: Interface for handling transport requests
 //   - [StdioTransport]: Standard I/O for subprocess communication
-//   - [StreamableHTTPTransport]: Modern HTTP per MCP spec 2025-03-26
+//   - [StreamableHTTPTransport]: Modern HTTP per MCP spec 2025-11-25
 //   - [SSETransport]: Server-Sent Events (legacy, prefer Streamable)
 //   - [Registry]: Thread-safe factory registry for transport creation
 //   - [DefaultRegistry]: Pre-configured registry with all standard transports

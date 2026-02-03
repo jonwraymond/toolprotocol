@@ -13,7 +13,7 @@ import (
 // SSETransport implements Transport using Server-Sent Events over HTTP.
 //
 // This is the legacy HTTP transport. For new implementations, prefer
-// StreamableHTTPTransport per MCP spec 2025-03-26.
+// StreamableHTTPTransport per MCP spec 2025-11-25.
 //
 // SSETransport is safe for concurrent use.
 type SSETransport struct {
