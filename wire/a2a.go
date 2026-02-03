@@ -151,11 +151,30 @@ func (w *A2AWire) EncodeResponse(ctx context.Context, resp *Response) ([]byte, e
 			artifacts = append(artifacts, map[string]any{"parts": []map[string]any{part}})
 		}
 
+		status := map[string]any{
+			"state": "completed",
+		}
+		if resp.Meta != nil {
+			if metaStatus, ok := resp.Meta["status"].(map[string]any); ok {
+				if state, ok := metaStatus["state"].(string); ok {
+					status["state"] = state
+				}
+				for k, v := range metaStatus {
+					status[k] = v
+				}
+			} else if state, ok := resp.Meta["state"].(string); ok {
+				status["state"] = state
+			}
+		}
+
 		rpc.Result = map[string]any{
-			"status": map[string]any{
-				"state": "completed",
-			},
+			"status":    status,
 			"artifacts": artifacts,
+		}
+		if resp.Meta != nil {
+			if taskID, ok := resp.Meta["taskId"]; ok {
+				rpc.Result["taskId"] = taskID
+			}
 		}
 		if len(resp.Meta) > 0 {
 			rpc.Result["_meta"] = resp.Meta
@@ -190,6 +209,15 @@ func (w *A2AWire) DecodeResponse(ctx context.Context, data []byte) (*Response, e
 			Data:    rpc.Error.Data,
 		}
 	} else if rpc.Result != nil {
+		if resp.Meta == nil {
+			resp.Meta = map[string]any{}
+		}
+		if status, ok := rpc.Result["status"].(map[string]any); ok {
+			resp.Meta["status"] = status
+		}
+		if taskID, ok := rpc.Result["taskId"]; ok {
+			resp.Meta["taskId"] = taskID
+		}
 		// Extract content from artifacts
 		if artifacts, ok := rpc.Result["artifacts"].([]any); ok {
 			for _, artifact := range artifacts {

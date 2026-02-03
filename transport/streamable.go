@@ -13,7 +13,7 @@ import (
 
 // StreamableHTTPTransport implements Transport for MCP's Streamable HTTP protocol.
 //
-// This transport is the recommended HTTP transport per MCP spec 2025-03-26,
+// This transport is the recommended HTTP transport per MCP spec 2025-11-25,
 // replacing the deprecated SSE transport. It provides:
 //   - Single endpoint handling POST/GET/DELETE methods
 //   - Session management via Mcp-Session-Id header
