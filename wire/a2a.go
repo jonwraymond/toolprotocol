@@ -7,7 +7,7 @@ import (
 )
 
 // A2AVersion is the A2A protocol version.
-const A2AVersion = "0.2.1"
+const A2AVersion = "0.3.0"
 
 // A2AWire implements Wire for Google's Agent-to-Agent protocol.
 type A2AWire struct{}

@@ -24,7 +24,7 @@ func ExampleNewA2A() {
 	fmt.Println("Version:", w.Version())
 	// Output:
 	// Name: a2a
-	// Version: 0.2.1
+	// Version: 0.3.0
 }
 
 func ExampleNewACP() {
