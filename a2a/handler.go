@@ -184,14 +184,18 @@ func (h *Handler) ServeTaskEvents(w http.ResponseWriter, r *http.Request, taskID
 		case <-r.Context().Done():
 			return
 		case <-ticker.C:
-			fmt.Fprintf(w, "event: heartbeat\ndata: {}\n\n")
+			if _, err := fmt.Fprintf(w, "event: heartbeat\ndata: {}\n\n"); err != nil {
+				return
+			}
 			flusher.Flush()
 		case taskUpdate, ok := <-ch:
 			if !ok {
 				return
 			}
 			payload, _ := json.Marshal(taskUpdate)
-			fmt.Fprintf(w, "event: task\nid: %s\ndata: %s\n\n", taskUpdate.ID, payload)
+			if _, err := fmt.Fprintf(w, "event: task\nid: %s\ndata: %s\n\n", taskUpdate.ID, payload); err != nil {
+				return
+			}
 			flusher.Flush()
 		}
 	}
@@ -268,7 +272,9 @@ func errorResponse(id string, err error) *wire.Response {
 }
 
 func readBody(r *http.Request) ([]byte, error) {
-	defer r.Body.Close()
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	return io.ReadAll(r.Body)
 }
 
