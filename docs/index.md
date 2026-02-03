@@ -11,6 +11,7 @@ A2A, and ACP integrations. The packages here are transport-agnostic and composab
 | `discover` | Service discovery + capability negotiation |
 | `transport` | Transport interfaces (stdio, SSE, streamable HTTP) |
 | `wire` | Protocol wire encoding (MCP, A2A, ACP) |
+| `a2a` | A2A JSON-RPC + REST/SSE bindings |
 | `stream` | Streaming events for progress/partial/complete |
 | `session` | Client session store + context helpers |
 | `task` | Long-running task lifecycle + subscriptions |

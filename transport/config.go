@@ -40,7 +40,7 @@ type SSEConfig struct {
 
 // StreamableConfig holds configuration for the Streamable HTTP transport.
 //
-// Streamable HTTP is the recommended HTTP transport per MCP spec 2025-03-26,
+// Streamable HTTP is the recommended HTTP transport per MCP spec 2025-11-25,
 // replacing the deprecated SSE transport.
 type StreamableConfig struct {
 	HTTPConfig
